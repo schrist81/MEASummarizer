@@ -96,7 +96,7 @@ ws1['B1'] = "Electrodes with spikes"
 
 ws1['C1'] = "Electrodes without spikes"
 
-ws1['D1'] = "Mean Spike frequency of electrodes with spikes"
+ws1['D1'] = "Mean Spike frequency of electrodes with spikes [Hz]"
 
 
         
@@ -197,7 +197,7 @@ class Example(Frame):
             ws1[fieldforSavingB] =  numberOfElectrodes-emptyElectrodes
 
             fieldforSavingD = "D"+str(5+k)
-            ws1[fieldforSavingD] = spikeFrequency
+            ws1[fieldforSavingD] = spikeFrequency/(numberOfElectrodes-emptyElectrodes)
 
             spikeFrequency = 0
             emptyElectrodes = 0
