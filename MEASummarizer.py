@@ -2,16 +2,12 @@
 # -*- coding: iso-8859-15 -*-
 import sys
 # IO package für Pfadnamen
-stflist = ['C:\\Program Files\\Stimfit 0.14\\wx-3.0-msw', 
-           'C:\\Program Files\\Stimfit 0.14', 
-           'C:\\Program Files\\Stimfit 0.14\\stf-site-packages', 
-           'C:\\WINDOWS\\SYSTEM32\\python27.zip', 
+stflist = ['C:\\WINDOWS\\SYSTEM32\\python27.zip', 
            'C:\\Users\\c-sch_000\\Anaconda\\Lib', 
            'C:\\Users\\c-sch_000\\Anaconda\\DLLs', 
            'C:\\Python27\\Lib', 
            'C:\\Python27\\DLLs', 
            'C:\\Python27\\Lib\\lib-tk', 
-           'C:\\Program Files\\Stimfit 0.14', 
            'C:\\Python27', 
            'C:\\Python27\\lib\\site-packages']
 sys.path = list(set(sys.path + stflist))
@@ -65,7 +61,6 @@ dest_filename = "F:\\Programmierung\\Python\\"
 dest_directory = ""
 
 ws1 = wb.active
-ws1.title = "Test"
 
 # Filling of Column A with Descriptions
 ws1['A1'] = "Well"
@@ -128,7 +123,7 @@ class Example(Frame):
         menubar.add_cascade(label="Options", menu=optionMenu)           
 
         optionMenu = Menu(menubar, tearoff=0)
-        optionMenu.add_command(label="Read Dose response csv file", command=self.onOpenBasicSOP)
+        optionMenu.add_command(label="Read Dose response csv file", command=self.onMEADoseResponse)
         menubar.add_cascade(label="Analysis", menu=optionMenu)               
         
         helpMenu = Menu(menubar, tearoff=0)
@@ -169,7 +164,7 @@ class Example(Frame):
         
 
 
-    def onOpenBasicSOP(self):
+    def onMEADoseResponse(self):
         ftypes = [('comma separated files', '*.csv'), ('All files', '*')]
         dlg = tkFileDialog.Open(self, filetypes = ftypes, initialdir = openDirectory)
         fl = dlg.show()
@@ -177,28 +172,36 @@ class Example(Frame):
         with open(fl, 'rb') as csvfile:
             #https://docs.python.org/2/library/csv.html
             csvreader = csv.DictReader(csvfile)
-            spikeCounts = []
+            spikeRate = []
             
             for row in csvreader:
-                spikeCounts.append(row['Spike Count'])
+                spikeRate.append(row['Spike Rate [Hz]'])
 
         numberOfElectrodes = 12
         numberOfWells = 24
         emptyElectrodes = 0
+        spikeFrequency = 0 # in Hz
         for k in xrange(numberOfWells):
             for l in xrange(numberOfElectrodes):
                 #print str(l+1) + ": " + str(k*numberOfElectrodes+l+1)
-                if int(spikeCounts[k*numberOfElectrodes+l]) == 0:
+                if float(spikeRate[k*numberOfElectrodes+l]) == 0:
                     emptyElectrodes = emptyElectrodes + 1
+                else:
+                    spikeFrequency = spikeFrequency+float(spikeRate[k*numberOfElectrodes+l])
             fieldforSavingC = "C"+str(5+k)
             fieldforSavingB = "B"+str(5+k)
             ws1[fieldforSavingC] =  emptyElectrodes
             ws1[fieldforSavingB] =  numberOfElectrodes-emptyElectrodes
+
+            fieldforSavingD = "D"+str(5+k)
+            ws1[fieldforSavingD] = spikeFrequency
+
+            spikeFrequency = 0
             emptyElectrodes = 0
 
             
 
-        dest_filename = dest_directory + "\\"  + abffile[0] + ".xlsx"
+        dest_filename = dest_directory + "\\SpikeAnalysis.xlsx"
         wb.save(filename = dest_filename)
 
 
