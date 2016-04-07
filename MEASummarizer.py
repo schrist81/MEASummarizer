@@ -2,7 +2,10 @@
 # -*- coding: iso-8859-15 -*-
 import sys
 # IO package für Pfadnamen
-stflist = ['C:\\WINDOWS\\SYSTEM32\\python27.zip', 
+stflist = ['C:\\Program Files\\Stimfit 0.14\\wx-3.0-msw', 
+           'C:\\Program Files\\Stimfit 0.14', 
+           'C:\\Program Files\\Stimfit 0.14\\stf-site-packages', 
+           'C:\\WINDOWS\\SYSTEM32\\python27.zip', 
            'C:\\Users\\c-sch_000\\Anaconda\\Lib', 
            'C:\\Users\\c-sch_000\\Anaconda\\DLLs', 
            'C:\\Python27\\Lib', 
